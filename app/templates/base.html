@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+        <title>{{ title }} - 博客</title>
+    {% else %}
+        <title>博客</title>
+    {% endif %}
+</head>
+<body>
+    <div>博客：<a href="{{ url_for('hello') }}">首页</a></div>
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>
