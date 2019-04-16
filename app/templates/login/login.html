@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script type="application/javascript">
+    function set_openid(openid, pr) {
+        const u = openid.search('<username>')
+        if (u !== -1) {
+            const user = prompt(`请输入您的${pr}用户名：`)
+            openid = openid.substr(0, u) + user
+        }
+        const form = document.forms['login']
+        form.elements['openid'].value = openid
+    }
+</script>
+<h1>登录</h1>
+<form action="" method="post" name="login">
+    {{ form.hidden_tag() }}
+    <p>
+        请录入你的OpenID，或者选择下面一个提供商：<br>
+        {{ form.openid(size=80) }}<br>
+        {% for error in form.openid.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+        |{% for pr in providers %}
+            <a href="javascript:set_openid('{{ pr.url }}', '{{ pr.name }}');">{{ pr.name }}</a>
+        {% endfor %}
+    </p>
+    <p>{{ form.remember_me }} 记住我</p>
+    <p><input type="submit" value="登录"></p>
+</form>
+{% endblock %}
