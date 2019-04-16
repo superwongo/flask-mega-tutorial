@@ -5,6 +5,9 @@
 # @CreateTime : 2019/4/15 10:01
 # @File       : config
 
+import os
+
+
 # ----------FLASK-WTF扩展库配置--------- #
 # 激活跨站点请求伪造保护
 CSRF_ENABLED = True
@@ -19,3 +22,8 @@ OPENID_PROVIDERS = [
     {'name': 'AOL', 'url': 'http://openid.aol.com/<username>'},
     {'name': 'Flickr', 'url': 'http://www.flickr.com/<username>'}
 ]
+
+# 配置SQLITE数据库信息
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+# 数据库文件存放路径
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, '..', 'instance', 'flask.sqlite')

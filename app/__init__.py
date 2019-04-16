@@ -15,6 +15,10 @@ def create_app():
     # 加载config配置文件
     app.config.from_pyfile('config.py', silent=True)
 
+    # 初始化数据库
+    from app.database import init_app
+    init_app(app)
+
     # 注册hello视图URL
     from app.hello import HelloWorld
     app.add_url_rule('/hello', view_func=HelloWorld.as_view('hello'))
