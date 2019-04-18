@@ -27,3 +27,6 @@ OPENID_PROVIDERS = [
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # 数据库文件存放路径
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, '..', 'instance', 'flask.sqlite')
+# Flask-SQLAlchemy 是否需要追踪对象的修改并且发送信号。
+# 这需要额外的内存， 如果不必要的可以禁用它。
+SQLALCHEMY_TRACK_MODIFICATIONS = False
