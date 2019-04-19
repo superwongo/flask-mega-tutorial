@@ -19,6 +19,30 @@ class User(db.Model):
         self.nickname = nickname
         self.email = email
 
+    @property
+    def is_authenticated(self):
+        """是否已验证"""
+        return True
+
+    @property
+    def is_active(self):
+        """是否处于活跃状态"""
+        return True
+
+    @property
+    def is_anonymous(self):
+        """是否为匿名用户"""
+        return False
+
+    def get_id(self):
+        """获取用户唯一标识"""
+        try:
+            # python 2
+            return unicode(self.id)
+        except NameError:
+            # python 3
+            return str(self.id)
+
     def __repr__(self):
         """打印类对象时的展示方式"""
         return '<User %r>' % self.nickname
