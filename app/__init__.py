@@ -36,6 +36,7 @@ def create_app():
     # 初始化登录扩展flask_login
     lm.init_app(application)
     lm.login_view = 'login'
+    lm.login_message = '请登录后访问此页面'
 
     # 注册hello视图URL
     from app.hello import HelloWorld
@@ -52,6 +53,10 @@ def create_app():
     # 注册Logout登出视图URL
     from app.login import LogoutView
     application.add_url_rule('/logout', view_func=LogoutView.as_view('logout'))
+
+    # 注册Register注册视图URL
+    from app.login import RegisterView
+    application.add_url_rule('/register', view_func=RegisterView.as_view('register'))
 
     try:
         # 确保 app.instance_path 存在

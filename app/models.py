@@ -5,54 +5,44 @@
 # @CreateTime : 2019/4/16 11:29
 # @File       : models
 
+import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+
 from app import db
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    nickname = db.Column(db.String(64), index=True, unique=True)
+    # index用于添加索引
+    # unique用于设置唯一索引
+    username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    # 初始化db.relationship
+    # 并非实际的数据库字段，只是创建一个虚拟的列，该列会与 Post.user_id (db.ForeignKey) 建立联系
+    # 第一个参数表示关联的模型类名；backref用于指定表之间的双向关系；lazy用于定义加载关联对象的方式
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
-    def __init__(self, nickname=None, email=None):
-        self.nickname = nickname
-        self.email = email
+    def set_password(self, raw_password):
+        """密码加密"""
+        self.password_hash = generate_password_hash(raw_password)
 
-    @property
-    def is_authenticated(self):
-        """是否已验证"""
-        return True
-
-    @property
-    def is_active(self):
-        """是否处于活跃状态"""
-        return True
-
-    @property
-    def is_anonymous(self):
-        """是否为匿名用户"""
-        return False
-
-    def get_id(self):
-        """获取用户唯一标识"""
-        try:
-            # python 2
-            return unicode(self.id)
-        except NameError:
-            # python 3
-            return str(self.id)
+    def check_password(self, raw_password):
+        """校验密码是否正确"""
+        return check_password_hash(self.password_hash, raw_password)
 
     def __repr__(self):
         """打印类对象时的展示方式"""
-        return '<User %r>' % self.nickname
+        return '<User %r>' % self.username
 
 
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.timezone)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):

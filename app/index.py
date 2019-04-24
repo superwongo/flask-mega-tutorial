@@ -6,7 +6,7 @@
 # @File       : index
 
 from flask.views import View
-from flask import g, render_template
+from flask import render_template
 from flask_login import login_required
 
 
@@ -15,7 +15,6 @@ class IndexView(View):
     decorators = [login_required]
 
     def dispatch_request(self):
-        user = g.user
         posts = [
             {
                 'author': {'nickname': '李白'},
@@ -27,4 +26,4 @@ class IndexView(View):
             }
         ]
 
-        return render_template('index/index.html', title='首页', user=user, posts=posts)
+        return render_template('index/index.html', title='首页', posts=posts)
