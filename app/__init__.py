@@ -6,10 +6,12 @@
 # @File       : __init__.py
 
 import os
+import datetime
 from flask import Flask, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
+from flask_avatars import Avatars
 
 
 # 实例化flask_sqlalchemy
@@ -18,6 +20,8 @@ db = SQLAlchemy()
 migrate = Migrate()
 # 实例化flask_login
 lm = LoginManager()
+# 实例化flask_avatars
+avatars = Avatars()
 
 
 def create_app():
@@ -37,6 +41,9 @@ def create_app():
     lm.init_app(application)
     lm.login_view = 'login'
     lm.login_message = '请登录后访问此页面'
+
+    # 初始化flask_avatars
+    avatars.init_app(application)
 
     # 注册hello视图URL
     from app.hello import HelloWorld
@@ -58,15 +65,32 @@ def create_app():
     from app.login import RegisterView
     application.add_url_rule('/register', view_func=RegisterView.as_view('register'))
 
+    # 用户蓝图注册
+    from app import user
+    application.register_blueprint(user.bp)
+
     try:
         # 确保 app.instance_path 存在
         os.makedirs(application.instance_path)
     except OSError:
         pass
 
+    @application.context_processor
+    def utility_processor():
+        """模板环境处理器注册"""
+        def get_avatars(email, *args, **kwargs):
+            """根据用户邮箱获取用户头像"""
+            import hashlib
+            email_hash = hashlib.md5(email.lower().encode('utf-8')).hexdigest()
+            return avatars.gravatar(email_hash, *args, **kwargs)
+        return dict(get_avatars=get_avatars)
+
     @application.before_request
     def before_request():
-        """将Flask-Login中解析出的用户信息赋值到全局变量"""
-        g.user = current_user
+        """请求前周期函数"""
+        # 用户已登录则登记用户请求时间
+        if current_user.is_authenticated:
+            current_user.last_seen = datetime.datetime.utcnow()
+            db.session.commit()
 
     return application

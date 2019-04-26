@@ -17,11 +17,11 @@ class IndexView(View):
     def dispatch_request(self):
         posts = [
             {
-                'author': {'username': '李白'},
+                'author': {'username': '李白', 'email': 'lib@126.com'},
                 'body': '举头望明月，低头思故乡'
             },
             {
-                'author': {'username': '李清照'},
+                'author': {'username': '李清照', 'email': 'liqz@126.com'},
                 'body': '知否，知否，应是绿肥红瘦'
             }
         ]

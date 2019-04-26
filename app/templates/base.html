@@ -15,6 +15,7 @@
         {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">登录</a>
         {% else %}
+            <a href="{{ url_for('user.user_info', username=current_user.username) }}">个人资料</a>
             <a href="{{ url_for('logout') }}">退出</a>
         {% endif %}
     </div>

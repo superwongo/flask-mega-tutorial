@@ -24,6 +24,10 @@ class User(UserMixin, db.Model):
     # 并非实际的数据库字段，只是创建一个虚拟的列，该列会与 Post.user_id (db.ForeignKey) 建立联系
     # 第一个参数表示关联的模型类名；backref用于指定表之间的双向关系；lazy用于定义加载关联对象的方式
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    # 个人介绍
+    about_me = db.Column(db.String(140))
+    # 最后访问时间
+    last_seen = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     def set_password(self, raw_password):
         """密码加密"""
@@ -42,7 +46,7 @@ class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.timezone)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):

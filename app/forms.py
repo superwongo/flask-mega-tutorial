@@ -6,13 +6,14 @@
 # @File       : forms
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
 
 from app.models import User
 
 
 class LoginForm(FlaskForm):
+    """登录表单"""
     # DataRequired：数据不可为空的验证器
     username = StringField('用户名', validators=[DataRequired()])
     password = PasswordField('密码', validators=[DataRequired()])
@@ -21,6 +22,7 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
+    """注册表单"""
     username = StringField('用户名', validators=[DataRequired()])
     email = StringField('邮箱', validators=[DataRequired(), Email()])
     password = PasswordField('密码', validators=[DataRequired()])
@@ -38,3 +40,10 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError('该邮箱已被使用')
+
+
+class UserInfoEditForm(FlaskForm):
+    """用户信息编辑表单"""
+    username = StringField('用户名', validators=[DataRequired()])
+    about_me = TextAreaField('个人简介', validators=[Length(min=0, max=140)])
+    submit = SubmitField('提交')
