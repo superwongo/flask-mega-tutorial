@@ -7,7 +7,7 @@
 
 import os
 import datetime
-from flask import Flask, g
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
@@ -75,6 +75,14 @@ def create_app():
     except OSError:
         pass
 
+    # 非DEBUG模式下，异常日志通过电子邮件发送
+    if not application.debug:
+        from app.logger import init_email, init_logger
+        # 异常日志邮件提醒初始化
+        init_email(application)
+        # 日志记录器初始化
+        init_logger(application)
+
     @application.context_processor
     def utility_processor():
         """模板环境处理器注册"""
@@ -92,5 +100,13 @@ def create_app():
         if current_user.is_authenticated:
             current_user.last_seen = datetime.datetime.utcnow()
             db.session.commit()
+
+    @application.errorhandler(404)
+    def not_found_error(error):
+        return render_template('error/404.html'), 404
+
+    @application.errorhandler(500)
+    def internal_error(error):
+        return render_template('error/500.html'), 500
 
     return application

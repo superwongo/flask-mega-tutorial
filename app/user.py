@@ -37,12 +37,17 @@ class UserInfoEditView(View):
     decorators = [login_required]
 
     def dispatch_request(self):
-        form = UserInfoEditForm()
+        form = UserInfoEditForm(current_user.username)
         # 验证通过更新当前登录用户信息
         if form.validate_on_submit():
             current_user.username = form.username.data
             current_user.about_me = form.about_me.data
-            db.session.commit()
+            # db.session.commit()
+            try:
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                raise e
             flash('您的修改已保存')
             return redirect(url_for('user.user_info_edit'))
         elif request.method == 'GET':
