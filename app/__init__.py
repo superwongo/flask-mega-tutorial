@@ -24,11 +24,16 @@ lm = LoginManager()
 avatars = Avatars()
 
 
-def create_app():
+def create_app(test_config=None):
     """应用工厂函数"""
     application = Flask(__name__)
-    # 加载config配置文件
+    # 加载config配置
+    # 使用 config.py 中的值来重载缺省配置
     application.config.from_pyfile('config.py', silent=True)
+
+    # test_config：单独设置配置参数，替代实例配置。这样可以实现 测试和开发的配置分离，相互独立。
+    if test_config:
+        application.config.from_mapping(test_config)
 
     # 初始化数据库flask_sqlalchemy
     db.init_app(application)

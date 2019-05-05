@@ -42,7 +42,7 @@ def init_logger(app):
         os.mkdir('logs')
 
     # 设置RotatingFileHandler类，最大日志文件大小为100kb，只保留10个备份文件，其会自动进行日志文件的切割和清理
-    file_handler = RotatingFileHandler('logs/microblog.log', maxBytes=102400, backupCount=10)
+    file_handler = RotatingFileHandler('logs/microblog.log', maxBytes=102400, backupCount=10, encoding='utf8')
     # logging.Formatter类为日志消息提供自定义格式
     # 分别记录了时间戳、日志记录级别、消息、日志来源的源代码文件和行号
     file_handler.setFormatter(logging.Formatter(
