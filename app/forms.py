@@ -57,3 +57,9 @@ class UserInfoEditForm(FlaskForm):
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
                 raise ValidationError('请使用其他用户名')
+
+
+class PostForm(FlaskForm):
+    """帖子提交表单"""
+    post = TextAreaField('内容', validators=[DataRequired(), Length(min=1, max=140)])
+    submit = SubmitField('提交')

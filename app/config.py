@@ -37,3 +37,7 @@ MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 # 电子邮箱邮件接收地址
 MAIL_ADMINS = ['1069291377@qq.com']
+
+# -----------分页参数配置-------------#
+# 每页展示数据条数
+POSTS_PER_PAGE = 20

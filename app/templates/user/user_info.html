@@ -29,4 +29,13 @@
     {% for post in posts %}
         {% include 'common/post.html' %}
     {% endfor %}
+    <p>
+        {% if prev_url %}
+            <a href="{{ prev_url }}">上一页</a>
+        {% endif %}
+        &nbsp;第{{ page }}页&nbsp;
+        {% if next_url %}
+            <a href="{{ next_url }}">下一页</a>
+        {% endif %}
+    </p>
 {% endblock %}

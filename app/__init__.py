@@ -59,8 +59,10 @@ def create_app(test_config=None):
     application.add_url_rule('/login', view_func=LoginView.as_view('login'))
 
     # 注册Index首页视图URL
-    from app.index import IndexView
+    from app.index import IndexView, ExploreView
     application.add_url_rule('/', view_func=IndexView.as_view('index'))
+    # 注册Explore发现视图URL
+    application.add_url_rule('/explore', view_func=ExploreView.as_view('explore'))
 
     # 注册Logout登出视图URL
     from app.login import LogoutView
