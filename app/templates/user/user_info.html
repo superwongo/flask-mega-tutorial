@@ -12,8 +12,15 @@
                 {% if user.last_seen %}
                     最后访问于：<p>{{ user.last_seen }}</p>
                 {% endif %}
+                <p>
+                    粉丝 {{ user.followers.count() }}，关注 {{ user.followed.count() }}
+                </p>
                 {% if user == current_user %}
                     <p><a href="{{ url_for('user.user_info_edit') }}">编辑您的资料</a></p>
+                {% elif not current_user.is_following(user) %}
+                    <p><a href="{{ url_for('user.follow', username=user.username) }}">关注</a></p>
+                {% else %}
+                    <p><a href="{{ url_for('user.unfollow', username=user.username) }}">取消关注</a></p>
                 {% endif %}
             </td>
         </tr>

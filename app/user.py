@@ -57,7 +57,50 @@ class UserInfoEditView(View):
         return render_template('user/user_info_edit.html', title='个人信息编辑', form=form)
 
 
+class FollowView(View):
+    """关注视图"""
+    methods = ['GET']
+    decorators = [login_required]
+
+    def dispatch_request(self, username):
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            flash('用户{}未找到'.format(username))
+            return redirect(url_for('index'))
+        elif user == current_user:
+            flash('不能关注自己！')
+            return redirect(url_for('user.user_info', username=username))
+        current_user.follow(user)
+        db.session.commit()
+        flash('您已关注{}！'.format(username))
+        return redirect(url_for('user.user_info', username=username))
+
+
+class UnfollowView(View):
+    """取消关注视图"""
+    methods = ['GET']
+    decorators = [login_required]
+
+    def dispatch_request(self, username):
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            flash('用户{}未找到'.format(username))
+            return redirect(url_for('index'))
+        elif user == current_user:
+            flash('不能取消关注自己！')
+            return redirect(url_for('user.user_info', username=username))
+        current_user.unfollow(user)
+        db.session.commit()
+        flash('您已取消关注{}！'.format(username))
+        return redirect(url_for('user.user_info', username=username))
+
+
 # 将用户资料视图注册到用户蓝图上
 bp.add_url_rule('/info/<username>', view_func=UserInfoView.as_view('user_info'))
 # 将用户资料修改视图注册到用户蓝图上
 bp.add_url_rule('/edit', view_func=UserInfoEditView.as_view('user_info_edit'))
+
+# 将关注视图注册到用户蓝图上
+bp.add_url_rule('/follow/<username>', view_func=FollowView.as_view('follow'))
+# 将取消关注视图注册到用户蓝图上
+bp.add_url_rule('/unfollow/<username>', view_func=UnfollowView.as_view('unfollow'))
