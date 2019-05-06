@@ -7,12 +7,15 @@
 
 import os
 import datetime
+
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
 from flask_avatars import Avatars
 from flask_mail import Mail
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
 
 
 # 实例化flask_sqlalchemy
@@ -25,6 +28,10 @@ lm = LoginManager()
 avatars = Avatars()
 # 实例化flask_mail
 mail = Mail()
+# 实例化flask_bootstrap
+bootstrap = Bootstrap()
+# 实例化flask_moment
+moment = Moment()
 
 
 def create_app(test_config=None):
@@ -55,6 +62,12 @@ def create_app(test_config=None):
 
     # 初始化flask_mail
     mail.init_app(application)
+
+    # 初始化flask_bootstrap
+    bootstrap.init_app(application)
+
+    # 初始化flask_moment
+    moment.init_app(application)
 
     # 注册hello视图URL
     from app.hello import HelloWorld
