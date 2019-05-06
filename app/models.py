@@ -5,9 +5,13 @@
 # @CreateTime : 2019/4/16 11:29
 # @File       : models
 
-import datetime
+from datetime import datetime
+import jwt
+from time import time
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from flask import current_app
 
 from app import db
 
@@ -37,7 +41,7 @@ class User(UserMixin, db.Model):
     # 个人介绍
     about_me = db.Column(db.String(140))
     # 最后访问时间
-    last_seen = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     # 当前用户的关注关系
     followed = db.relationship(
         # 关系当中的右侧实体（将左侧实体看成是上级类）
@@ -89,6 +93,21 @@ class User(UserMixin, db.Model):
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
 
+    def get_jwt_token(self, expires_in=600):
+        """获取JWT令牌"""
+        return jwt.encode({'reset_password': self.id, 'exp': time() + expires_in},
+                          current_app.config['SECRET_KEY'],
+                          algorithm='HS256').decode('utf8')
+
+    @staticmethod
+    def verify_jwt_token(token):
+        try:
+            user_id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms='HS256')['reset_password']
+        except Exception as e:
+            print(e)
+            return
+        return User.query.get(user_id)
+
     def __repr__(self):
         """打印类对象时的展示方式"""
         return '<User %r>' % self.username
@@ -98,7 +117,7 @@ class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
