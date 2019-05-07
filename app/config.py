@@ -41,3 +41,9 @@ MAIL_ADMINS = ['1069291377@qq.com']
 # -----------分页参数配置-------------#
 # 每页展示数据条数
 POSTS_PER_PAGE = 20
+
+# ----------国际化、本地化配置------- #
+# 支持语言列表
+LANGUAGES = ['en', 'zh_CN']
+# 默认本地语言
+BABEL_DEFAULT_LOCALE = 'zh_CN'

@@ -8,6 +8,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
+from flask_babel import lazy_gettext as _l
 
 from app.models import User
 
@@ -15,38 +16,38 @@ from app.models import User
 class LoginForm(FlaskForm):
     """登录表单"""
     # DataRequired：数据不可为空的验证器
-    username = StringField('用户名', validators=[DataRequired()])
-    password = PasswordField('密码', validators=[DataRequired()])
-    remember_me = BooleanField('记住我', default=False)
-    submit = SubmitField('登录')
+    username = StringField(_l('用户名'), validators=[DataRequired()])
+    password = PasswordField(_l('密码'), validators=[DataRequired()])
+    remember_me = BooleanField(_l('记住我'), default=False)
+    submit = SubmitField(_l('登录'))
 
 
 class RegistrationForm(FlaskForm):
     """注册表单"""
-    username = StringField('用户名', validators=[DataRequired()])
-    email = StringField('邮箱', validators=[DataRequired(), Email()])
-    password = PasswordField('密码', validators=[DataRequired()])
-    password2 = PasswordField('确认密码', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('注册')
+    username = StringField(_l('用户名'), validators=[DataRequired()])
+    email = StringField(_l('邮箱'), validators=[DataRequired(), Email()])
+    password = PasswordField(_l('密码'), validators=[DataRequired()])
+    password2 = PasswordField(_l('确认密码'), validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField(_l('注册'))
 
     def validate_username(self, username):
         """自定义username验证器"""
         user = User.query.filter_by(username=username.data).first()
         if user:
-            raise ValidationError('该用户名已被使用')
+            raise ValidationError(_l('该用户名已被使用'))
 
     def validate_email(self, email):
         """自定义email验证器"""
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError('该邮箱已被使用')
+            raise ValidationError(_l('该邮箱已被使用'))
 
 
 class UserInfoEditForm(FlaskForm):
     """用户信息编辑表单"""
-    username = StringField('用户名', validators=[DataRequired()])
-    about_me = TextAreaField('个人简介', validators=[Length(min=0, max=140)])
-    submit = SubmitField('提交')
+    username = StringField(_l('用户名'), validators=[DataRequired()])
+    about_me = TextAreaField(_l('个人简介'), validators=[Length(min=0, max=140)])
+    submit = SubmitField(_l('提交'))
 
     def __init__(self, original_username, *args, **kwargs):
         super(UserInfoEditForm, self).__init__(*args, **kwargs)
@@ -56,23 +57,23 @@ class UserInfoEditForm(FlaskForm):
         if username.data != self.original_username:
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
-                raise ValidationError('请使用其他用户名')
+                raise ValidationError(_l('请使用其他用户名'))
 
 
 class PostForm(FlaskForm):
     """帖子提交表单"""
-    post = TextAreaField('内容', validators=[DataRequired(), Length(min=1, max=140)])
-    submit = SubmitField('提交')
+    post = TextAreaField(_l('内容'), validators=[DataRequired(), Length(min=1, max=140)])
+    submit = SubmitField(_l('提交'))
 
 
 class ResetPasswordRequestForm(FlaskForm):
     """重置密码请求表单"""
-    email = StringField('邮箱', validators=[DataRequired(), Email()])
-    submit = SubmitField('请求密码重置')
+    email = StringField(_l('邮箱'), validators=[DataRequired(), Email()])
+    submit = SubmitField(_l('请求密码重置'))
 
 
 class ResetPasswordForm(FlaskForm):
     """重置密码表单"""
-    password = PasswordField('密码', validators=[DataRequired()])
-    password2 = PasswordField('确认密码', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('请求密码重置')
+    password = PasswordField(_l('密码'), validators=[DataRequired()])
+    password2 = PasswordField(_l('确认密码'), validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField(_l('请求密码重置'))

@@ -8,6 +8,7 @@
 from flask.views import View
 from flask import render_template, Blueprint, flash, redirect, url_for, request, current_app
 from flask_login import login_required, current_user
+from flask_babel import _
 
 from app.models import User, Post
 from app.forms import UserInfoEditForm
@@ -49,13 +50,13 @@ class UserInfoEditView(View):
             except Exception as e:
                 db.session.rollback()
                 raise e
-            flash('您的修改已保存')
+            flash(_('您的修改已保存'))
             return redirect(url_for('user.user_info_edit'))
         elif request.method == 'GET':
             # 查询是获取当前用户的信息
             form.username.data = current_user.username
             form.about_me.data = current_user.about_me
-        return render_template('user/user_info_edit.html', title='个人信息编辑', form=form)
+        return render_template('user/user_info_edit.html', title=_('个人信息编辑'), form=form)
 
 
 class FollowView(View):
@@ -66,14 +67,14 @@ class FollowView(View):
     def dispatch_request(self, username):
         user = User.query.filter_by(username=username).first()
         if not user:
-            flash('用户{}未找到'.format(username))
+            flash(_('用户%(username)s未找到', username=username))
             return redirect(url_for('index'))
         elif user == current_user:
-            flash('不能关注自己！')
+            flash(_('不能关注自己！'))
             return redirect(url_for('user.user_info', username=username))
         current_user.follow(user)
         db.session.commit()
-        flash('您已关注{}！'.format(username))
+        flash(_('您已关注%(username)s！', username=username))
         return redirect(url_for('user.user_info', username=username))
 
 
@@ -85,14 +86,14 @@ class UnfollowView(View):
     def dispatch_request(self, username):
         user = User.query.filter_by(username=username).first()
         if not user:
-            flash('用户{}未找到'.format(username))
+            flash(_('用户%(username)s未找到', username=username))
             return redirect(url_for('index'))
         elif user == current_user:
-            flash('不能取消关注自己！')
+            flash(_('不能取消关注自己！'))
             return redirect(url_for('user.user_info', username=username))
         current_user.unfollow(user)
         db.session.commit()
-        flash('您已取消关注{}！'.format(username))
+        flash(_('您已取消关注%(username)s！', username=username))
         return redirect(url_for('user.user_info', username=username))
 
 

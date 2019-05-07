@@ -8,7 +8,7 @@
 import os
 import datetime
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
@@ -16,6 +16,7 @@ from flask_avatars import Avatars
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
+from flask_babel import Babel, lazy_gettext as _l
 
 
 # 实例化flask_sqlalchemy
@@ -32,6 +33,8 @@ mail = Mail()
 bootstrap = Bootstrap()
 # 实例化flask_moment
 moment = Moment()
+# 实例化flask_babel
+babel = Babel()
 
 
 def create_app(test_config=None):
@@ -55,7 +58,7 @@ def create_app(test_config=None):
     # 初始化登录扩展flask_login
     lm.init_app(application)
     lm.login_view = 'login'
-    lm.login_message = '请登录后访问此页面'
+    lm.login_message = _l('请登录后访问此页面')
 
     # 初始化flask_avatars
     avatars.init_app(application)
@@ -68,6 +71,9 @@ def create_app(test_config=None):
 
     # 初始化flask_moment
     moment.init_app(application)
+
+    # 初始化flask_babel
+    babel.init_app(application)
 
     # 注册hello视图URL
     from app.hello import HelloWorld
@@ -114,6 +120,10 @@ def create_app(test_config=None):
         # 日志记录器初始化
         init_logger(application)
 
+    # 翻译命令组注册
+    from app.cli import register
+    register(application)
+
     @application.context_processor
     def utility_processor():
         """模板环境处理器注册"""
@@ -132,6 +142,12 @@ def create_app(test_config=None):
             current_user.last_seen = datetime.datetime.utcnow()
             db.session.commit()
 
+        # 设置本地语言环境参数
+        from flask_babel import get_locale
+        locale = get_locale()
+        language = locale.language + '-' + locale.territory if locale.territory else locale.language
+        g.locale = language
+
     @application.errorhandler(404)
     def not_found_error(error):
         return render_template('error/404.html'), 404
@@ -139,5 +155,10 @@ def create_app(test_config=None):
     @application.errorhandler(500)
     def internal_error(error):
         return render_template('error/500.html'), 500
+
+    @babel.localeselector
+    def get_locale():
+        """获取本地语言环境"""
+        return request.accept_languages.best_match(application.config['LANGUAGES'])
 
     return application

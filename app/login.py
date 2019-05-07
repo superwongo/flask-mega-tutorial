@@ -9,6 +9,7 @@ from flask.views import View
 from flask import redirect, render_template, url_for, flash, request
 from werkzeug.urls import url_parse
 from flask_login import current_user, login_user, logout_user
+from flask_babel import _
 
 from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
 from app import lm, db
@@ -37,7 +38,7 @@ class LoginView(View):
             user = User.query.filter_by(username=form.username.data).first()
             # 用户不存在或密码校验失败，增加闪现消息，并重定向到登录页
             if not user or not user.check_password(form.password.data):
-                flash('用户名或密码有误')
+                flash(_('用户名或密码有误'))
                 return redirect(url_for('login'))
 
             # 用户校验通过，进行用户登录，并重定向到首页
@@ -48,7 +49,7 @@ class LoginView(View):
             return redirect(next_page)
 
         # GET请求，直接展示登录页面
-        return render_template('login/login.html', title='登录', form=form)
+        return render_template('login/login.html', title=_('登录'), form=form)
 
 
 class LogoutView(View):
@@ -73,10 +74,10 @@ class RegisterView(View):
             user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()
-            flash('祝贺，你现在已成为一个注册用户！')
+            flash(_('祝贺，你现在已成为一个注册用户！'))
             return redirect(url_for('login'))
 
-        return render_template('login/register.html', title='注册', form=form)
+        return render_template('login/register.html', title=_('注册'), form=form)
 
 
 class ResetPasswordRequestView(View):
@@ -90,14 +91,14 @@ class ResetPasswordRequestView(View):
         if form.validate_on_submit():
             user = User.query.filter_by(email=form.email.data).first()
             if not user:
-                flash('该电子邮箱未注册')
+                flash(_('该电子邮箱未注册'))
                 return redirect(url_for('reset_password_request'))
 
             from app.email import send_password_reset_email
             send_password_reset_email(user)
-            flash('查看您的电子邮箱消息，以重置您的密码')
+            flash(_('查看您的电子邮箱消息，以重置您的密码'))
             return redirect(url_for('login'))
-        return render_template('login/reset_password_request.html', title='重置密码', form=form)
+        return render_template('login/reset_password_request.html', title=_('重置密码'), form=form)
 
 
 class ResetPasswordView(View):
@@ -114,6 +115,6 @@ class ResetPasswordView(View):
         if form.validate_on_submit():
             user.set_password(form.password.data)
             db.session.commit()
-            flash('您的密码已被重置')
+            flash(_('您的密码已被重置'))
             return redirect(url_for('login'))
         return render_template('login/reset_password.html', form=form)

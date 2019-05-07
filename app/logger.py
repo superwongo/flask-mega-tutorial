@@ -54,4 +54,4 @@ def init_logger(app):
 
     # 每次服务重新启动，都会登记一条日志
     app.logger.setLevel(logging.INFO)
-    app.logger.info('微博已启动')
+    app.logger.info('博客已启动')
