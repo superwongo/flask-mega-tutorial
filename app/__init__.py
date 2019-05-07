@@ -75,32 +75,15 @@ def create_app(test_config=None):
     # 初始化flask_babel
     babel.init_app(application)
 
-    # 注册hello视图URL
-    from app.hello import HelloWorld
-    application.add_url_rule('/hello', view_func=HelloWorld.as_view('hello'))
-
-    # 注册Login登录视图URL
-    from app.login import LoginView, LogoutView, RegisterView, ResetPasswordRequestView, ResetPasswordView
-    application.add_url_rule('/login', view_func=LoginView.as_view('login'))
+    # 用户认证蓝图注册
+    from app import auth
+    application.register_blueprint(auth.bp)
 
     # 注册Index首页视图URL
     from app.index import IndexView, ExploreView
     application.add_url_rule('/', view_func=IndexView.as_view('index'))
     # 注册Explore发现视图URL
     application.add_url_rule('/explore', view_func=ExploreView.as_view('explore'))
-
-    # 注册Logout登出视图URL
-    application.add_url_rule('/logout', view_func=LogoutView.as_view('logout'))
-
-    # 注册Register注册视图URL
-    application.add_url_rule('/register', view_func=RegisterView.as_view('register'))
-
-    # 注册申请重置密码视图URL
-    application.add_url_rule('/reset_password_request',
-                             view_func=ResetPasswordRequestView.as_view('reset_password_request'))
-
-    # 注册重置密码视图URL
-    application.add_url_rule('/reset_password/<token>', view_func=ResetPasswordView.as_view('reset_password'))
 
     # 用户蓝图注册
     from app import user

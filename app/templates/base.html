@@ -27,10 +27,10 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
-                        <li><a href="{{ url_for('login') }}">{{ _('登录') }}</a></li>
+                        <li><a href="{{ url_for('auth.login') }}">{{ _('登录') }}</a></li>
                     {% else %}
                         <li><a href="{{ url_for('user.user_info', username=current_user.username) }}">{{ _('个人资料') }}</a></li>
-                        <li><a href="{{ url_for('logout') }}">{{ _('退出') }}</a></li>
+                        <li><a href="{{ url_for('auth.logout') }}">{{ _('退出') }}</a></li>
                     {% endif %}
                 </ul>
             </div>

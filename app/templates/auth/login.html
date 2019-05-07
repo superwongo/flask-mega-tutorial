@@ -9,6 +9,6 @@
         </div>
     </div>
     <br>
-    <p>{{ _('新用户？') }}<a href="{{ url_for('register') }}">{{ _('点击注册！') }}</a></p>
-    <p>{{ _('忘记密码？') }}<a href="{{ url_for('reset_password_request') }}">{{ _('重置密码') }}</a></p>
+    <p>{{ _('新用户？') }}<a href="{{ url_for('auth.register') }}">{{ _('点击注册！') }}</a></p>
+    <p>{{ _('忘记密码？') }}<a href="{{ url_for('auth.reset_password_request') }}">{{ _('重置密码') }}</a></p>
 {% endblock %}
