@@ -5,7 +5,7 @@
 # @CreateTime : 2019/5/8 10:10
 # @File       : views.py
 
-from flask import request, current_app, url_for, render_template, flash, redirect
+from flask import request, current_app, url_for, render_template, flash, redirect, g
 from flask.views import View
 from flask_login import login_required, current_user
 from flask_babel import _
@@ -134,3 +134,23 @@ class UnfollowView(View):
         db.session.commit()
         flash(_('您已取消关注%(username)s！', username=username))
         return redirect(url_for('main.user_info', username=username))
+
+
+class SearchView(View):
+    """搜索视图"""
+    methods = ['GET']
+    decorators = [login_required]
+
+    def dispatch_request(self):
+        # 表单校验失败，跳转至发现页
+        if not g.search_form.validate():
+            return redirect(url_for('main.explore'))
+        # 分页查询
+        page = request.args.get('page', 1, type=int)
+        posts, total = Post.search(g.search_form.q.data, page, current_app.config['POSTS_PER_PAGE'])
+        next_url = url_for('main.search', q=g.search_form.q.data, page=page+1) \
+            if total > page*current_app.config['POSTS_PER_PAGE'] else None
+        prev_url = url_for('main.search', q=g.search_form.q.data, page=page-1) \
+            if page > 1 else None
+        return render_template('search.html', title=_('搜索'), posts=posts,
+                               page=page, next_url=next_url, prev_url=prev_url)

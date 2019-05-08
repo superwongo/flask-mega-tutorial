@@ -17,7 +17,10 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
 
+from elasticsearch import Elasticsearch
 
+
+# -----------Flask扩展库实例化----------- #
 # 实例化flask_sqlalchemy
 db = SQLAlchemy()
 # 实例化flask_migrate
@@ -39,6 +42,7 @@ babel = Babel()
 def create_app(test_config=None):
     """应用工厂函数"""
     app = Flask(__name__)
+    # --------------应用参数加载--------------- #
     # 加载config配置
     # 使用 config.py 中的值来重载缺省配置
     app.config.from_pyfile('config.py', silent=True)
@@ -47,6 +51,7 @@ def create_app(test_config=None):
     if test_config:
         app.config.from_mapping(test_config)
 
+    # ------------Flask扩展库初始化------------- #
     # 初始化数据库flask_sqlalchemy
     db.init_app(app)
 
@@ -73,6 +78,7 @@ def create_app(test_config=None):
     # 初始化flask_babel
     babel.init_app(app)
 
+    # -------------蓝图注册----------- #
     from app import auth, errors, main
     # 用户认证子应用蓝图注册
     app.register_blueprint(auth.bp, url_prefix='/auth')
@@ -81,16 +87,19 @@ def create_app(test_config=None):
     # 核心子应用蓝图注册
     app.register_blueprint(main.bp)
 
+    # ------------命令组注册---------- #
     # 翻译命令组注册
     from app.cli import register
     register(app)
 
+    # ----------实例目录创建----------- #
     try:
         # 确保 app.instance_path 存在
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
+    # -------日志及异常提醒初始化------- #
     # 非DEBUG模式下，异常日志通过电子邮件发送
     if not app.debug and not app.testing:
         from app.logger import init_email, init_logger
@@ -98,6 +107,9 @@ def create_app(test_config=None):
         init_email(app)
         # 日志记录器初始化
         init_logger(app)
+
+    # ------添加Elasticsearch属性------- #
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config['ELASTICSEARCH_URL'] else None
 
     return app
 

@@ -12,11 +12,13 @@ from flask_login import current_user
 from flask_babel import get_locale
 
 from app import avatars, db
+from app.main.forms import SearchForm
 
 
 def register_views(bp):
     # 在函数中引入可以避免循环依赖问题
-    from app.main.views import IndexView, ExploreView, UserInfoView, UserInfoEditView, FollowView, UnfollowView
+    from app.main.views import IndexView, ExploreView, UserInfoView, UserInfoEditView, FollowView, \
+        UnfollowView, SearchView
     # 首页视图
     bp.add_url_rule('/', view_func=IndexView.as_view('index'))
     # 发现视图
@@ -29,6 +31,8 @@ def register_views(bp):
     bp.add_url_rule('/follow/<username>', view_func=FollowView.as_view('follow'))
     # 取消关注视图
     bp.add_url_rule('/unfollow/<username>', view_func=UnfollowView.as_view('unfollow'))
+    # 全局搜索视图
+    bp.add_url_rule('/search', view_func=SearchView.as_view('search'))
 
     @bp.before_request
     def before_request():
@@ -37,6 +41,7 @@ def register_views(bp):
         if current_user.is_authenticated:
             current_user.last_seen = datetime.datetime.utcnow()
             db.session.commit()
+            g.search_form = SearchForm()
 
         # 设置本地语言环境参数
         locale = get_locale()
