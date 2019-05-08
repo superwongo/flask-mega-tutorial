@@ -16,18 +16,18 @@
                     {{ _('粉丝') }} {{ user.followers.count() }}，{{ _('关注') }} {{ user.followed.count() }}
                 </p>
                 {% if user == current_user %}
-                    <p><a href="{{ url_for('user.user_info_edit') }}">{{ _('编辑您的资料') }}</a></p>
+                    <p><a href="{{ url_for('main.user_info_edit') }}">{{ _('编辑您的资料') }}</a></p>
                 {% elif not current_user.is_following(user) %}
-                    <p><a href="{{ url_for('user.follow', username=user.username) }}">{{ _('关注') }}</a></p>
+                    <p><a href="{{ url_for('main.follow', username=user.username) }}">{{ _('关注') }}</a></p>
                 {% else %}
-                    <p><a href="{{ url_for('user.unfollow', username=user.username) }}">{{ _('取消关注') }}</a></p>
+                    <p><a href="{{ url_for('main.unfollow', username=user.username) }}">{{ _('取消关注') }}</a></p>
                 {% endif %}
             </td>
         </tr>
     </table>
     <br>
     {% for post in posts %}
-        {% include 'common/post.html' %}
+        {% include '_post.html' %}
     {% endfor %}
     <br>
     <nav aria-label="...">

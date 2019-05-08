@@ -13,7 +13,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from flask import current_app
 
-from app import db
+from app import db, lm
 
 
 followers = db.Table(
@@ -111,6 +111,12 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         """打印类对象时的展示方式"""
         return '<User %r>' % self.username
+
+
+@lm.user_loader
+def load_user(id):
+    """加载用户信息回调"""
+    return User.query.get(int(id))
 
 
 class Post(db.Model):

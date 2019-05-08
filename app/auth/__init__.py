@@ -21,7 +21,7 @@ def register_views(bp):
     # 申请重置密码视图
     bp.add_url_rule('/reset_password_request', view_func=ResetPasswordRequestView.as_view('reset_password_request'))
     # 重置密码视图
-    bp.add_url_rule('/reset_password', view_func=ResetPasswordView.as_view('reset_password'))
+    bp.add_url_rule('/reset_password/<token>', view_func=ResetPasswordView.as_view('reset_password'))
 
 
 # 创建用户认证蓝图

@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 # @Project    : flask-mega-tutorial
 # @Author     : wangc
-# @CreateTime : 2019/4/15 17:30
-# @File       : forms
+# @CreateTime : 2019/5/8 10:10
+# @File       : forms.py
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
+from wtforms import StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, ValidationError, Length
 from flask_babel import lazy_gettext as _l
 
 from app.models import User
@@ -34,6 +34,3 @@ class PostForm(FlaskForm):
     """帖子提交表单"""
     post = TextAreaField(_l('内容'), validators=[DataRequired(), Length(min=1, max=140)])
     submit = SubmitField(_l('提交'))
-
-
-

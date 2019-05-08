@@ -22,7 +22,7 @@ class LoginView(View):
     def dispatch_request(self):
         # 若全局变量中已存在解析出的用户信息，且用户已验证通过，则直接跳转至首页
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('main.index'))
 
         # 加载登录Form表单
         form = LoginForm()
@@ -39,7 +39,7 @@ class LoginView(View):
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get('next', '')
             if not next_page or not url_parse(next_page).decode_netloc():
-                next_page = url_for('index')
+                next_page = url_for('main.index')
             return redirect(next_page)
 
         # GET请求，直接展示登录页面
@@ -51,7 +51,7 @@ class LogoutView(View):
 
     def dispatch_request(self):
         logout_user()
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
 
 class RegisterView(View):
@@ -59,7 +59,7 @@ class RegisterView(View):
 
     def dispatch_request(self):
         if current_user.is_authenticated:
-            return url_for('index')
+            return url_for('main.index')
 
         form = RegistrationForm()
         # 校验成功，创建用户信息，跳转至登录页面
@@ -80,7 +80,7 @@ class ResetPasswordRequestView(View):
 
     def dispatch_request(self):
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('main.index'))
         form = ResetPasswordRequestForm()
         if form.validate_on_submit():
             user = User.query.filter_by(email=form.email.data).first()
@@ -88,7 +88,7 @@ class ResetPasswordRequestView(View):
                 flash(_('该电子邮箱未注册'))
                 return redirect(url_for('auth.reset_password_request'))
 
-            from app.email import send_password_reset_email
+            from app.auth.email import send_password_reset_email
             send_password_reset_email(user)
             flash(_('查看您的电子邮箱消息，以重置您的密码'))
             return redirect(url_for('auth.login'))
@@ -101,10 +101,10 @@ class ResetPasswordView(View):
 
     def dispatch_request(self, token):
         if current_user.is_authenticated:
-            return redirect(url_for('index'))
+            return redirect(url_for('main.index'))
         user = User.verify_jwt_token(token)
         if not user:
-            return redirect(url_for('index'))
+            return redirect(url_for('main.index'))
         form = ResetPasswordForm()
         if form.validate_on_submit():
             user.set_password(form.password.data)
