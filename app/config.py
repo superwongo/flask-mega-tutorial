@@ -7,6 +7,10 @@
 
 import os
 
+from dotenv import load_dotenv
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # ----------FLASK-WTF扩展库配置--------- #
 # 激活跨站点请求伪造保护
@@ -17,7 +21,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 
 # ----------FLASK-SQLALCHEMY数据库配置---------#
 # 配置SQLITE数据库信息
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # 数据库文件存放路径
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, '..', 'instance', 'flask.sqlite')
 # Flask-SQLAlchemy 是否需要追踪对象的修改并且发送信号。
