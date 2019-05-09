@@ -12,7 +12,7 @@ import os
 # 激活跨站点请求伪造保护
 CSRF_ENABLED = True
 # CSRF被激活时，用于令牌加密，表单验证
-SECRET_KEY = 'you-will-never-guess'
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 
 
 # ----------FLASK-SQLALCHEMY数据库配置---------#
