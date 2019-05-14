@@ -22,7 +22,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
 # ----------FLASK-SQLALCHEMY数据库配置---------#
 # 配置SQLITE数据库信息
 # 数据库文件存放路径
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, '..', 'instance', 'flask.sqlite')
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI') or \
+                          'sqlite:///' + os.path.join(BASE_DIR, '..', 'instance', 'flask.sqlite')
 # Flask-SQLAlchemy 是否需要追踪对象的修改并且发送信号。
 # 这需要额外的内存， 如果不必要的可以禁用它。
 SQLALCHEMY_TRACK_MODIFICATIONS = False
