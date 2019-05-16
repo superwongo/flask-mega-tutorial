@@ -154,3 +154,13 @@ class SearchView(View):
             if page > 1 else None
         return render_template('search.html', title=_('搜索'), posts=posts,
                                page=page, next_url=next_url, prev_url=prev_url)
+
+
+class UserPopupView(View):
+    """用户资料弹出框"""
+    methods = ['GET']
+    decorators = [login_required]
+
+    def dispatch_request(self, username):
+        user = User.query.filter_by(username=username).first_or_404()
+        return render_template('user_popup.html', user=user)
