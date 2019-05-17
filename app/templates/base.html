@@ -37,6 +37,17 @@
                     {% if current_user.is_anonymous %}
                         <li><a href="{{ url_for('auth.login') }}">{{ _('登录') }}</a></li>
                     {% else %}
+                        <li>
+                            <a href="{{ url_for('main.messages') }}">
+                                {{ _('私信') }}
+                                {% set new_messages = current_user.new_messages() %}
+                                <span id="message_count" class="badge"
+                                      style="visibility: {% if new_messages %}visible
+                                                         {% else %}hidden {% endif %};">
+                                    {{ new_messages }}
+                                </span>
+                            </a>
+                        </li>
                         <li><a href="{{ url_for('main.user_info', username=current_user.username) }}">{{ _('个人资料') }}</a></li>
                         <li><a href="{{ url_for('auth.logout') }}">{{ _('退出') }}</a></li>
                     {% endif %}
@@ -71,13 +82,17 @@
             let xhr = null;
             $('.user_popup').hover(
                 function(event) {
+                    // 获取span元素
                     const elem = $(event.currentTarget);
+                    // 创建定时器
                     timer = setTimeout(function() {
                         timer=null;
+                        // 通讯后台，获取弹窗展示页面
                         xhr = $.ajax(
                             `/info/${elem.first().text().trim()}/popup`).done(
                                 function(data){
                                     xhr = null;
+                                    // 创建弹窗对象并展示
                                     elem.popover({
                                         trigger: 'manual',
                                         html: true,
@@ -85,6 +100,7 @@
                                         container: elem,
                                         content: data
                                     }).popover('show');
+                                    // 渲染通过Ajax添加新的Flask-Moment元素
                                     flask_moment_render_all();
                                 }
                         );
@@ -103,6 +119,30 @@
                     }
                 }
             )
-        })
+        });
+        function set_message_count(n) {
+            $('#message_count').text(n);
+            $('#message_count').css('visibility', n ? 'visible': 'hidden');
+        }
+        {% if current_user.is_authenticated %}
+        $(function () {
+            let since = 0;
+            // 定期调用回调函数，每10秒轮询一次
+            setInterval(function () {
+                $.ajax('{{ url_for('main.notifications') }}?since='+since).done(
+                    function (notifications) {
+                        for (let i = 0; i < notifications.length; i++) {
+                            if (notifications[i].name === 'unread_message_count') {
+                                // 根据名为unread_message_count的通知，更新消息计数徽标
+                                set_message_count(notifications[i].data);
+                            }
+                            // 根据最后获取时间，限制只处理新的通知信息
+                            since = notifications[i].timestamp;
+                        }
+                    }
+                );
+            }, 10000);
+        });
+        {% endif %}
     </script>
 {% endblock %}

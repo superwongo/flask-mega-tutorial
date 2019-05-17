@@ -18,7 +18,7 @@ from app.main.forms import SearchForm
 def register_views(bp):
     # 在函数中引入可以避免循环依赖问题
     from app.main.views import IndexView, ExploreView, UserInfoView, UserInfoEditView, FollowView, \
-        UnfollowView, SearchView, UserPopupView
+        UnfollowView, SearchView, UserPopupView, SendMessageView, MessageView, NotificationView
     # 首页视图
     bp.add_url_rule('/', view_func=IndexView.as_view('index'))
     # 发现视图
@@ -35,6 +35,12 @@ def register_views(bp):
     bp.add_url_rule('/search', view_func=SearchView.as_view('search'))
     # 用户资料弹出框
     bp.add_url_rule('/info/<username>/popup', view_func=UserPopupView.as_view('user_popup'))
+    # 发送私信视图
+    bp.add_url_rule('/send_message/<recipient>', view_func=SendMessageView.as_view('send_message'))
+    # 查看私信视图
+    bp.add_url_rule('/messages', view_func=MessageView.as_view('messages'))
+    # 查询通知视图
+    bp.add_url_rule('/notifications', view_func=NotificationView.as_view('notifications'))
 
     @bp.before_request
     def before_request():

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-05-09 13:24+0800\n"
+"POT-Creation-Date: 2019-05-16 16:49+0800\n"
 "PO-Revision-Date: 2019-05-07 13:09+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -96,7 +96,7 @@ msgstr "Your password has been reset."
 msgid "个人简介"
 msgstr "About me"
 
-#: app/main/forms.py:21 app/main/forms.py:37
+#: app/main/forms.py:21 app/main/forms.py:37 app/main/forms.py:57
 msgid "提交"
 msgstr "Submit"
 
@@ -104,58 +104,66 @@ msgstr "Submit"
 msgid "请使用其他用户名"
 msgstr "Please use a different username."
 
-#: app/main/forms.py:36
+#: app/main/forms.py:36 app/main/forms.py:56
 msgid "内容"
 msgstr "Say something"
 
-#: app/main/forms.py:42 app/main/views.py:155
+#: app/main/forms.py:42 app/main/views.py:157
 msgid "搜索"
 msgstr "Search"
 
-#: app/main/views.py:28
+#: app/main/views.py:30
 msgid "你的帖子已提交！"
 msgstr "Your post is now live!"
 
-#: app/main/views.py:39 app/templates/base.html:25
+#: app/main/views.py:41 app/templates/base.html:25
 msgid "首页"
 msgstr "Home"
 
-#: app/main/views.py:56 app/templates/base.html:26
+#: app/main/views.py:58 app/templates/base.html:26
 msgid "发现"
 msgstr "Explore"
 
-#: app/main/views.py:92
+#: app/main/views.py:94
 msgid "您的修改已保存"
 msgstr "Your changes have been saved."
 
-#: app/main/views.py:98
+#: app/main/views.py:100
 msgid "个人信息编辑"
 msgstr "Edit Profile"
 
-#: app/main/views.py:109 app/main/views.py:128
+#: app/main/views.py:111 app/main/views.py:130
 #, python-format
 msgid "用户%(username)s未找到"
 msgstr "User %(username)s not found."
 
-#: app/main/views.py:112
+#: app/main/views.py:114
 msgid "不能关注自己！"
 msgstr "You cannot follow yourself!"
 
-#: app/main/views.py:116
+#: app/main/views.py:118
 #, python-format
 msgid "您已关注%(username)s！"
 msgstr "You are following %(username)s."
 
-#: app/main/views.py:131
+#: app/main/views.py:133
 msgid "不能取消关注自己！"
 msgstr "You cannot unfollow yourself!"
 
-#: app/main/views.py:135
+#: app/main/views.py:137
 #, python-format
 msgid "您已取消关注%(username)s！"
 msgstr "You are not following %(username)s."
 
-#: app/templates/_post.html:14
+#: app/main/views.py:183
+msgid "您的消息已被发送"
+msgstr "Your message has been sent."
+
+#: app/main/views.py:185
+msgid "发送消息"
+msgstr "Send Message"
+
+#: app/templates/_post.html:16
 #, python-format
 msgid "%(username)s 说 %(when)s："
 msgstr "%(username)s said %(when)s："
@@ -165,27 +173,31 @@ msgstr "%(username)s said %(when)s："
 msgid "微博"
 msgstr "MicroBlog"
 
-#: app/templates/base.html:40
+#: app/templates/base.html:40 app/templates/messages.html:4
+msgid "私信"
+msgstr "Message"
+
+#: app/templates/base.html:41
 msgid "个人资料"
 msgstr "Profile"
 
-#: app/templates/base.html:41
+#: app/templates/base.html:42
 msgid "退出"
 msgstr "Logout"
 
-#: app/templates/index.html:18 app/templates/search.html:13
-#: app/templates/user_info.html:37
+#: app/templates/index.html:18 app/templates/messages.html:12
+#: app/templates/search.html:13 app/templates/user_info.html:40
 msgid "上一页"
 msgstr "Newer posts"
 
-#: app/templates/index.html:21 app/templates/search.html:16
-#: app/templates/user_info.html:40
+#: app/templates/index.html:21 app/templates/messages.html:15
+#: app/templates/search.html:16 app/templates/user_info.html:43
 #, python-format
 msgid "第%(page)s页"
 msgstr "Page %(page)s"
 
-#: app/templates/index.html:24 app/templates/search.html:19
-#: app/templates/user_info.html:43
+#: app/templates/index.html:24 app/templates/messages.html:18
+#: app/templates/search.html:19 app/templates/user_info.html:46
 msgid "下一页"
 msgstr "Older posts"
 
@@ -193,29 +205,39 @@ msgstr "Older posts"
 msgid "搜索结果"
 msgstr "SearchResult"
 
+#: app/templates/send_message.html:5
+#, python-format
+msgid "向%(recipient)s发送信息"
+msgstr "Send Message to %(recipient)s"
+
 #: app/templates/user_info.html:8
 msgid "用户"
 msgstr "User"
 
-#: app/templates/user_info.html:13
+#: app/templates/user_info.html:13 app/templates/user_popup.html:15
 msgid "最后访问于"
 msgstr "Last seen on"
 
-#: app/templates/user_info.html:16
+#: app/templates/user_info.html:16 app/templates/user_popup.html:18
 msgid "粉丝"
 msgstr "Followers"
 
 #: app/templates/user_info.html:16 app/templates/user_info.html:21
+#: app/templates/user_popup.html:18 app/templates/user_popup.html:23
 msgid "关注"
 msgstr "Following"
 
-#: app/templates/user_info.html:19
+#: app/templates/user_info.html:19 app/templates/user_popup.html:21
 msgid "编辑您的资料"
 msgstr "Edit your profile"
 
-#: app/templates/user_info.html:23
+#: app/templates/user_info.html:23 app/templates/user_popup.html:25
 msgid "取消关注"
 msgstr "Unfollow"
+
+#: app/templates/user_info.html:26
+msgid "发送私信"
+msgstr "Send private message"
 
 #: app/templates/user_info_edit.html:5
 msgid "个人资料编辑"
@@ -249,9 +271,7 @@ msgstr "click here"
 
 #: app/templates/email/reset_password.html:8
 msgid "另外，你也可以在浏览器的地址栏中粘贴以下链接:"
-msgstr ""
-"Alternatively, you can paste the following link in your browser's address"
-" bar:"
+msgstr "Alternatively, you can paste the following link in your browser's address bar:"
 
 #: app/templates/email/reset_password.html:10
 #: app/templates/email/reset_password.txt:7
