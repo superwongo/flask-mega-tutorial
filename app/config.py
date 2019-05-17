@@ -52,7 +52,10 @@ LANGUAGES = ['en', 'zh_CN']
 # 默认本地语言
 BABEL_DEFAULT_LOCALE = 'zh_CN'
 
-
 # --------Elasticsearch配置----------- #
 # Elasticsearch连接URL，从环境变量获取
 ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
+
+# --------------Redis配置------------- #
+# redis地址
+REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'

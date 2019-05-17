@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-05-16 16:49+0800\n"
+"POT-Creation-Date: 2019-05-17 16:43+0800\n"
 "PO-Revision-Date: 2019-05-07 13:09+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-#: app/__init__.py:64
+#: app/__init__.py:66
 msgid "请登录后访问此页面"
 msgstr "Please log in to access this page."
 
@@ -155,13 +155,21 @@ msgstr "You cannot unfollow yourself!"
 msgid "您已取消关注%(username)s！"
 msgstr "You are not following %(username)s."
 
-#: app/main/views.py:183
+#: app/main/views.py:184
 msgid "您的消息已被发送"
 msgstr "Your message has been sent."
 
-#: app/main/views.py:185
+#: app/main/views.py:186
 msgid "发送消息"
 msgstr "Send Message"
+
+#: app/main/views.py:227
+msgid "导出任务正在执行中"
+msgstr "An export task is currently in progress"
+
+#: app/main/views.py:229
+msgid "导出帖子..."
+msgstr "Exporting posts..."
 
 #: app/templates/_post.html:16
 #, python-format
@@ -173,31 +181,31 @@ msgstr "%(username)s said %(when)s："
 msgid "微博"
 msgstr "MicroBlog"
 
-#: app/templates/base.html:40 app/templates/messages.html:4
+#: app/templates/base.html:42 app/templates/messages.html:4
 msgid "私信"
 msgstr "Message"
 
-#: app/templates/base.html:41
+#: app/templates/base.html:51
 msgid "个人资料"
 msgstr "Profile"
 
-#: app/templates/base.html:42
+#: app/templates/base.html:52
 msgid "退出"
 msgstr "Logout"
 
 #: app/templates/index.html:18 app/templates/messages.html:12
-#: app/templates/search.html:13 app/templates/user_info.html:40
+#: app/templates/search.html:13 app/templates/user_info.html:45
 msgid "上一页"
 msgstr "Newer posts"
 
 #: app/templates/index.html:21 app/templates/messages.html:15
-#: app/templates/search.html:16 app/templates/user_info.html:43
+#: app/templates/search.html:16 app/templates/user_info.html:48
 #, python-format
 msgid "第%(page)s页"
 msgstr "Page %(page)s"
 
 #: app/templates/index.html:24 app/templates/messages.html:18
-#: app/templates/search.html:19 app/templates/user_info.html:46
+#: app/templates/search.html:19 app/templates/user_info.html:51
 msgid "下一页"
 msgstr "Older posts"
 
@@ -222,7 +230,7 @@ msgstr "Last seen on"
 msgid "粉丝"
 msgstr "Followers"
 
-#: app/templates/user_info.html:16 app/templates/user_info.html:21
+#: app/templates/user_info.html:16 app/templates/user_info.html:26
 #: app/templates/user_popup.html:18 app/templates/user_popup.html:23
 msgid "关注"
 msgstr "Following"
@@ -231,11 +239,15 @@ msgstr "Following"
 msgid "编辑您的资料"
 msgstr "Edit your profile"
 
-#: app/templates/user_info.html:23 app/templates/user_popup.html:25
+#: app/templates/user_info.html:22
+msgid "导出您的帖子"
+msgstr "Export your posts"
+
+#: app/templates/user_info.html:28 app/templates/user_popup.html:25
 msgid "取消关注"
 msgstr "Unfollow"
 
-#: app/templates/user_info.html:26
+#: app/templates/user_info.html:31
 msgid "发送私信"
 msgstr "Send private message"
 
@@ -260,10 +272,31 @@ msgstr "Forgot Your Password?"
 msgid "重置您的密码"
 msgstr "To reset your password"
 
+#: app/templates/email/export_posts.html:1
+#: app/templates/email/export_posts.txt:1
 #: app/templates/email/reset_password.html:1
 #: app/templates/email/reset_password.txt:1
 msgid "亲爱的"
 msgstr "Dear"
+
+#: app/templates/email/export_posts.html:2
+#: app/templates/email/export_posts.txt:3
+msgid "请查收您要求的帖子信息。"
+msgstr "Please find attached the archive of your posts that you requested."
+
+#: app/templates/email/export_posts.html:3
+#: app/templates/email/export_posts.txt:5
+#: app/templates/email/reset_password.html:11
+#: app/templates/email/reset_password.txt:9
+msgid "谨致问候，"
+msgstr "Sincerely,"
+
+#: app/templates/email/export_posts.html:4
+#: app/templates/email/export_posts.txt:7
+#: app/templates/email/reset_password.html:12
+#: app/templates/email/reset_password.txt:11
+msgid "微博团队"
+msgstr "The Microblog Team"
 
 #: app/templates/email/reset_password.html:5
 msgid "点击此处"
@@ -271,22 +304,14 @@ msgstr "click here"
 
 #: app/templates/email/reset_password.html:8
 msgid "另外，你也可以在浏览器的地址栏中粘贴以下链接:"
-msgstr "Alternatively, you can paste the following link in your browser's address bar:"
+msgstr ""
+"Alternatively, you can paste the following link in your browser's address"
+" bar:"
 
 #: app/templates/email/reset_password.html:10
 #: app/templates/email/reset_password.txt:7
 msgid "如果您未申请密码重置请忽略此信息。"
 msgstr "If you have not requested a password reset simply ignore this message."
-
-#: app/templates/email/reset_password.html:11
-#: app/templates/email/reset_password.txt:9
-msgid "谨致问候，"
-msgstr "Sincerely,"
-
-#: app/templates/email/reset_password.html:12
-#: app/templates/email/reset_password.txt:11
-msgid "微博团队"
-msgstr "The Microblog Team"
 
 #: app/templates/email/reset_password.txt:3
 msgid "请点击下面的链接来重置您的密码："

@@ -18,6 +18,8 @@ from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
 
 from elasticsearch import Elasticsearch
+from redis import Redis
+import rq
 
 
 # -----------Flask扩展库实例化----------- #
@@ -110,6 +112,10 @@ def create_app(test_config=None):
 
     # ------添加Elasticsearch属性------- #
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config['ELASTICSEARCH_URL'] else None
+
+    # ---------添加redis属性------------ #
+    app.redis = Redis.from_url(app.config['REDIS_URL'])
+    app.task_queue = rq.Queue('microblog-tasks', connection=app.redis)
 
     return app
 

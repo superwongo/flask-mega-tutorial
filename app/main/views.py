@@ -216,3 +216,16 @@ class NotificationView(View):
         notifications = current_user.notifications.filter(
             Notification.timestamp > since).order_by(Notification.timestamp.asc())
         return jsonify([{'name': n.name, 'data': n.get_data(), 'timestamp': n.timestamp} for n in notifications])
+
+
+class ExportPostsView(View):
+    methods = ['GET']
+    decorators = [login_required]
+
+    def dispatch_request(self):
+        if current_user.get_task_in_progress('export_posts'):
+            flash(_('导出任务正在执行中'))
+        else:
+            current_user.launch_task('export_posts', _('导出帖子...'))
+            db.session.commit()
+        return redirect(url_for('main.user_info', username=current_user.username))
