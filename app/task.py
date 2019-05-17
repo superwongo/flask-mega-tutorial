@@ -5,7 +5,8 @@
 # @CreateTime : 2019/5/17 13:56
 # @File       : task.py
 
-import time, json
+import time
+import json
 from rq import get_current_job
 from flask import render_template
 
@@ -49,7 +50,7 @@ def export_posts(user_id):
             data.append({'body': post.body, 'timestamp': post.timestamp.isoformat() + 'Z'})
             time.sleep(5)
             i += 1
-            _set_task_progress(100 * i // total_posts)
+            _set_task_progress(100 * i / total_posts)
 
         send_email('[微博] 您的博客帖子', sender=app.config['ADMINS'][0], recipients=[user.email],
                    text_body=render_template('email/export_posts.txt', user=user),
