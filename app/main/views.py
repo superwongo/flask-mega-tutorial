@@ -215,7 +215,7 @@ class NotificationView(View):
         since = request.args.get('since', 0.0, type=float)
         notifications = current_user.notifications.filter(
             Notification.timestamp > since).order_by(Notification.timestamp.asc())
-        return jsonify([{'name': n.name, 'data': n.get_data(), 'timestamp': n.timestamp} for n in notifications])
+        return jsonify([{'name': n.name, 'data': n.get_data(), 'timestamp': str(n.timestamp)} for n in notifications])
 
 
 class ExportPostsView(View):
