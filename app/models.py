@@ -170,7 +170,7 @@ class User(UserMixin, db.Model):
         self.notifications.filter_by(name=name).delete()
         n = Notification(name=name, payload_json=json.dumps(data), user=self)
         db.session.add(n)
-        db.session.commit()
+        # db.session.commit()
         return n
 
     def launch_task(self, name, description, *args, **kwargs):
@@ -234,7 +234,7 @@ class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    timestamp = db.Column(db.Float, index=True, default=time)
+    timestamp = db.Column(db.Float(asdecimal=True), index=True, default=time)
     payload_json = db.Column(db.Text)
 
     def get_data(self):
