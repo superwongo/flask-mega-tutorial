@@ -7,6 +7,7 @@ Create Date: 2019-05-16 17:57:48.081518
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import mysql
 
 
 # revision identifiers, used by Alembic.
@@ -22,7 +23,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=128), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('timestamp', sa.Float(asdecimal=True, decimal_return_scale=8), nullable=True),
+    sa.Column('timestamp', mysql.FLOAT(precision=20, scale=8), nullable=True),
     sa.Column('payload_json', sa.Text(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')

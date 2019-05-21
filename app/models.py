@@ -8,7 +8,9 @@
 import json
 from datetime import datetime
 from time import time
-import jwt, rq, redis
+import jwt
+import rq
+import redis
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -16,6 +18,8 @@ from flask import current_app
 
 from app import db, lm
 from app.search import query_index, add_to_index, remove_from_index
+
+from sqlalchemy.dialects.mysql import FLOAT
 
 
 class SearchableMixin(object):
@@ -234,7 +238,7 @@ class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    timestamp = db.Column(db.Float(asdecimal=True, decimal_return_scale=8), index=True, default=time)
+    timestamp = db.Column(FLOAT(precision=20, scale=8), index=True, default=time)
     payload_json = db.Column(db.Text)
 
     def get_data(self):
