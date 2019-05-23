@@ -19,8 +19,6 @@ from flask import current_app
 from app import db, lm
 from app.search import query_index, add_to_index, remove_from_index
 
-from sqlalchemy.dialects.mysql import FLOAT
-
 
 class SearchableMixin(object):
     @classmethod

@@ -9,7 +9,7 @@ import os
 import click
 
 
-def register(app):
+def register_commands(app):
     """翻译命令行注册"""
     @app.cli.group()
     def translate():

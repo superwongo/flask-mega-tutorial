@@ -7,38 +7,15 @@
 
 import os
 
-from flask import Flask, request, current_app
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from flask_avatars import Avatars
-from flask_mail import Mail
-from flask_bootstrap import Bootstrap
-from flask_moment import Moment
-from flask_babel import Babel, lazy_gettext as _l
-
+from flask import Flask
+from flask_babel import lazy_gettext as _l
 from elasticsearch import Elasticsearch
 from redis import Redis
 import rq
 
-
-# -----------Flask扩展库实例化----------- #
-# 实例化flask_sqlalchemy
-db = SQLAlchemy()
-# 实例化flask_migrate
-migrate = Migrate()
-# 实例化flask_login
-lm = LoginManager()
-# 实例化flask_avatars
-avatars = Avatars()
-# 实例化flask_mail
-mail = Mail()
-# 实例化flask_bootstrap
-bootstrap = Bootstrap()
-# 实例化flask_moment
-moment = Moment()
-# 实例化flask_babel
-babel = Babel()
+from app.extensions import db, migrate, lm, avatars, mail, bootstrap, moment, babel, register_extensions
+from app.cli import register_commands
+from app.logger import register_email, register_logger
 
 
 def create_app(test_config=None):
@@ -53,35 +30,35 @@ def create_app(test_config=None):
     if test_config:
         app.config.from_mapping(test_config)
 
-    # ------------Flask扩展库初始化------------- #
-    # 初始化数据库flask_sqlalchemy
-    db.init_app(app)
-
-    # 初始化数据库flask_migrate
-    migrate.init_app(app, db)
-
-    # 初始化登录扩展flask_login
-    lm.init_app(app)
+    # ---------注册Flask扩展库--- ---- #
+    register_extensions(app)
     lm.login_view = 'auth.login'
     lm.login_message = _l('请登录后访问此页面')
+    # ---------注册蓝图--------------- #
+    register_blueprints(app)
+    # ---------注册命令组------------- #
+    # 翻译命令组注册
+    register_commands(app)
+    # ---------注册扩展功能属性-------- #
+    register_attr(app)
+    # ---------注册日志及异常提醒----- #
+    # 非DEBUG模式下，异常日志通过电子邮件发送
+    if not app.debug and not app.testing:
+        # 异常日志邮件提醒初始化
+        register_email(app)
+        # 日志记录器初始化
+        register_logger(app)
 
-    # 初始化flask_avatars
-    avatars.init_app(app)
+    # ---------实例目录创建----------- #
+    try:
+        # 确保 app.instance_path 存在
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
+    return app
 
-    # 初始化flask_mail
-    mail.init_app(app)
 
-    # 初始化flask_bootstrap
-    bootstrap.init_app(app)
-
-    # 初始化flask_moment
-    moment.init_app(app)
-
-    # 初始化flask_babel
-    babel.init_app(app)
-
-    # -------------蓝图注册----------- #
-    from app import auth, errors, main
+def register_blueprints(app):
     # 用户认证子应用蓝图注册
     app.register_blueprint(auth.bp, url_prefix='/auth')
     # 错误子应用蓝图注册
@@ -89,41 +66,13 @@ def create_app(test_config=None):
     # 核心子应用蓝图注册
     app.register_blueprint(main.bp)
 
-    # ------------命令组注册---------- #
-    # 翻译命令组注册
-    from app.cli import register
-    register(app)
 
-    # ----------实例目录创建----------- #
-    try:
-        # 确保 app.instance_path 存在
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
-    # -------日志及异常提醒初始化------- #
-    # 非DEBUG模式下，异常日志通过电子邮件发送
-    if not app.debug and not app.testing:
-        from app.logger import init_email, init_logger
-        # 异常日志邮件提醒初始化
-        init_email(app)
-        # 日志记录器初始化
-        init_logger(app)
-
-    # ------添加Elasticsearch属性------- #
+def register_attr(app):
+    # 添加Elasticsearch属性
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config['ELASTICSEARCH_URL'] else None
-
-    # ---------添加redis属性------------ #
+    # 添加redis属性
     app.redis = Redis.from_url(app.config['REDIS_URL'])
     app.task_queue = rq.Queue('microblog-tasks', connection=app.redis)
 
-    return app
 
-
-@babel.localeselector
-def get_locale():
-    """获取本地语言环境"""
-    return request.accept_languages.best_match(current_app.config['LANGUAGES'])
-
-
-from app import models
+from app import auth, errors, main, models

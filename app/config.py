@@ -59,3 +59,7 @@ ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
 # --------------Redis配置------------- #
 # redis地址
 REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'
+
+# --------------JWT验证配置----------- #
+# 登录获取token值交易URL
+JWT_AUTH_URL_RULE = '/api/auth'

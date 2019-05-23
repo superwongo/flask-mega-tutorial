@@ -10,7 +10,7 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 
 
-def init_email(app):
+def register_email(app):
     if app.config['MAIL_SERVER']:
         auth = None
         if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
@@ -36,7 +36,7 @@ def init_email(app):
         app.logger.addHandler(mail_handler)
 
 
-def init_logger(app):
+def register_logger(app):
     # 创建logs目录，用于存放日志文件
     if not os.path.exists('logs'):
         os.mkdir('logs')
