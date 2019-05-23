@@ -9,7 +9,7 @@ from flask_restful import Api
 
 
 def register_api(api):
-    from app.api import users, errors, tokens
+    from app.api import users
     api.add_resource(users.GetUsers, '/api/get_users', endpoint='api.get_users')
     api.add_resource(users.GetUser, '/api/get_user/<int:id>', endpoint='api.get_user')
 

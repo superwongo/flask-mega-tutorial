@@ -38,7 +38,6 @@ users_fields = {
 
 
 class GetUsers(Resource):
-
     @marshal_with(users_fields, envelope='resource')
     @jwt_required()
     def get(self):
