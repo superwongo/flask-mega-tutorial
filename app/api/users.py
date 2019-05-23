@@ -47,5 +47,6 @@ class GetUsers(Resource):
 
 class GetUser(Resource):
     @marshal_with(users_fields, envelope='resource')
+    @jwt_required()
     def get(self, id):
         return User.query.filter_by(id=id).first()
