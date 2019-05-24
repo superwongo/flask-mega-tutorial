@@ -6,7 +6,8 @@
 # @File       : microblog.py
 
 
-from app import create_app, db
+from app import create_app
+from app.extensions import db
 from app.models import User, Post, Message, Notification, Task
 
 
