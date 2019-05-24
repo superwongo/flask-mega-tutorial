@@ -11,7 +11,7 @@ from flask import Blueprint, g
 from flask_login import current_user
 from flask_babel import get_locale
 
-from app import avatars, db
+from app.extensions import avatars, db
 from app.main.forms import SearchForm
 
 

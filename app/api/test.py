@@ -5,7 +5,7 @@
 # @CreateTime : 2019/5/22 9:04
 # @File       : test.py
 
-from flask import Flask, request
+from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort
 
 

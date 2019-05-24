@@ -11,7 +11,7 @@ from werkzeug.urls import url_parse
 from flask_login import current_user, login_user, logout_user
 from flask_babel import _
 
-from app import db
+from app.extensions import db
 from app.auth.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User
 

@@ -10,7 +10,8 @@ import json
 from rq import get_current_job
 from flask import render_template
 
-from app import db, create_app
+from app import create_app
+from app.extensions import db
 from app.models import Task, User, Post
 from app.email import send_email
 

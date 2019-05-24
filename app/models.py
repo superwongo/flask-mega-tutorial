@@ -16,7 +16,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from flask import current_app
 
-from app import db, lm
+from app.extensions import db, lm
 from app.search import query_index, add_to_index, remove_from_index
 
 

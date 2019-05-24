@@ -13,7 +13,7 @@ from elasticsearch import Elasticsearch
 from redis import Redis
 import rq
 
-from app.extensions import db, migrate, lm, avatars, mail, bootstrap, moment, babel, register_extensions
+from app.extensions import lm, register_extensions
 from app.cli import register_commands
 from app.logger import register_email, register_logger
 

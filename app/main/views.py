@@ -12,7 +12,7 @@ from flask.views import View
 from flask_login import login_required, current_user
 from flask_babel import _
 
-from app import db
+from app.extensions import db
 from app.models import User, Post, Message, Notification
 from app.main.forms import UserInfoEditForm, PostForm, MessageForm
 
