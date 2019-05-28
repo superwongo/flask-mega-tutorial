@@ -1,0 +1,86 @@
+version: "3"
+
+services:
+  mysql:
+    image: mariadb:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: "microblog"
+      MYSQL_USER: "microblog"
+      MYSQL_PASSWORD: "microblog"
+    command: [--character-set-server=utf8mb4, --collation-server=utf8mb4_unicode_ci]
+    ports:
+      - "3306:3306"
+    networks:
+      - microblog
+    volumes:
+      - /docker/mysql:/var/lib/mysql
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.0
+    container_name: elasticsearch
+    restart: always
+    environment:
+      discovery.type: "single-node"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - microblog
+
+  redis:
+    image: redis:3-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - microblog
+
+  microblog:
+    image: superwong/microblog:latest
+    container_name: microblog
+    restart: always
+    environment:
+      SECRET_KEY: "my-secret-key"
+      MAIL_SERVER: "smtp.126.com"
+      MAIL_USERNAME: "wangchao_198912@126.com"
+      MAIL_PASSWORD: "wy006816"
+      DATABASE_URL: "mysql+pymysql://microblog:<database-password>@dbserver/microblog"
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      REDIS_URL: "redis://redis:6379/0"
+    depends_on:
+      - "mysql"
+      - "elasticsearch"
+      - "redis"
+    ports:
+      - "8000:5000"
+    networks:
+      - microblog
+
+  rq-worker:
+    image: superwong/microblog:latest
+    container_name: rq-worker
+    restart: always
+    environment:
+      SECRET_KEY: "my-secret-key"
+      MAIL_SERVER: "smtp.126.com"
+      MAIL_USERNAME: "wangchao_198912@126.com"
+      MAIL_PASSWORD: "wy006816"
+      DATABASE_URL: "mysql+pymysql://microblog:<database-password>@dbserver/microblog"
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      REDIS_URL: "redis://redis-server:6379/0"
+    depends_on:
+      - "mysql"
+      - "elasticsearch"
+      - "redis"
+    entrypoint: "venv/bin/rq"
+    command: [worker, -u, "redis://redis:6379/0", microblog-tasks]
+    networks:
+      - microblog
+
+networks:
+  microblog:
+
