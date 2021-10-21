@@ -2,7 +2,7 @@ alembic==1.0.9
 aniso8601==6.0.0
 atomicwrites==1.3.0
 attrs==19.1.0
-Babel==2.6.0
+Babel==2.9.1
 blinker==1.4
 Click==7.0
 colorama==0.4.1
